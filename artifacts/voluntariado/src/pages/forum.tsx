@@ -12,6 +12,7 @@ import {
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
+import { getApiBase } from "@/lib/utils";
 
 interface ForumPost {
   id: number;
@@ -41,7 +42,7 @@ interface ForumComment {
   createdAt: string;
 }
 
-const BASE = "";
+const BASE = getApiBase();
 
 async function fetchPosts(): Promise<ForumPost[]> {
   const res = await fetch(`${BASE}/api/posts`, { credentials: "include" });
