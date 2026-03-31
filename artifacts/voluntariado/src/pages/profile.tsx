@@ -16,22 +16,23 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { SKILLS, INTERESTS, ACCESSIBILITY_OPTIONS } from "@/lib/matchingOptions";
 import { useQuery } from "@tanstack/react-query";
+import { getApiBase } from "@/lib/utils";
 
 async function fetchCities(state: string): Promise<string[]> {
   if (!state) return [];
-  const res = await fetch(`/api/locations/cities?state=${encodeURIComponent(state)}`);
+  const res = await fetch(`${getApiBase()}/api/locations/cities?state=${encodeURIComponent(state)}`);
   if (!res.ok) return [];
   return res.json();
 }
 
 async function fetchStates(): Promise<string[]> {
-  const res = await fetch("/api/locations/states");
+  const res = await fetch(`${getApiBase()}/api/locations/states`);
   if (!res.ok) return [];
   return res.json();
 }
 
 async function fetchUserStats() {
-  const res = await fetch("/api/users/stats", { credentials: "include" });
+  const res = await fetch(`${getApiBase()}/api/users/stats`, { credentials: "include" });
   if (!res.ok) return null;
   return res.json();
 }
