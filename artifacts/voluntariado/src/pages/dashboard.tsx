@@ -2,6 +2,7 @@ import { ProtectedRoute } from "@/components/layout/ProtectedRoute";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Loader2, BarChart3, Users, Clock, TrendingUp, CheckCircle, XCircle, AlertCircle } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import { getApiBase } from "@/lib/utils";
 import {
   BarChart,
   Bar,
@@ -17,7 +18,7 @@ import {
 } from "recharts";
 
 async function fetchOrgDashboard() {
-  const res = await fetch("/api/organizations/dashboard", { credentials: "include" });
+  const res = await fetch(`${getApiBase()}/api/organizations/dashboard`, { credentials: "include" });
   if (!res.ok) throw new Error("Error al cargar el dashboard");
   return res.json();
 }
