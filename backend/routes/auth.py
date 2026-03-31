@@ -90,7 +90,7 @@ def _set_auth_cookie(response: Response, token: str) -> None:
         key=COOKIE_NAME,
         value=token,
         httponly=True,
-        samesite="lax",
+        samesite="none" if is_production else "lax",
         max_age=7 * 24 * 3600,
         secure=is_production,
         path="/",
