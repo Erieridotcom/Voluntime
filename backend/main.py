@@ -81,40 +81,53 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
 
 
 # ---------------------------------------------------------------------------
-# Security headers — added to every response
 # ---------------------------------------------------------------------------
-@app.middleware("http")
-async def security_headers(request: Request, call_next):
-    response = await call_next(request)
-    response.headers["X-Content-Type-Options"] = "nosniff"
-    response.headers["X-Frame-Options"] = "DENY"
-    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
-    response.headers["Permissions-Policy"] = "geolocation=(), camera=(), microphone=()"
-    return response
-
-
+# CORS — MUST be registered first so it wraps everything else
+# Allow local dev origins; set ALLOWED_ORIGIN (or comma-separated
+# ALLOWED_ORIGINS) env var in production (e.g. on Render).
+#
+# Example:
+#   ALLOWED_ORIGIN=https://voluntime-three.vercel.app
 # ---------------------------------------------------------------------------
-# CORS — allow local dev origins; add ALLOWED_ORIGIN env var for production
-# ---------------------------------------------------------------------------
-ALLOWED_ORIGINS = [
+ALLOWED_ORIGINS: list[str] = [
     "http://localhost:5173",
     "http://localhost:3000",
     "http://localhost:4173",
     "http://127.0.0.1:5173",
 ]
 
-# Optional: set ALLOWED_ORIGIN in production to allow your deployed frontend
-PROD_ORIGIN = os.getenv("ALLOWED_ORIGIN")
-if PROD_ORIGIN:
-    ALLOWED_ORIGINS.append(PROD_ORIGIN)
+# Support a single origin or a comma-separated list of origins
+_env_origins = os.getenv("ALLOWED_ORIGINS") or os.getenv("ALLOWED_ORIGIN") or ""
+for _origin in _env_origins.split(","):
+    _origin = _origin.strip().rstrip("/")
+    if _origin and _origin not in ALLOWED_ORIGINS:
+        ALLOWED_ORIGINS.append(_origin)
+
+print(f"[CORS] Allowed origins: {ALLOWED_ORIGINS}")
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"],
-    allow_headers=["Content-Type", "Authorization", "Accept"],
+    allow_headers=["Content-Type", "Authorization", "Accept", "Cookie"],
+    expose_headers=["Set-Cookie"],
 )
+
+
+# ---------------------------------------------------------------------------
+# Security headers — added to every response (runs after CORS)
+# ---------------------------------------------------------------------------
+@app.middleware("http")
+async def security_headers(request: Request, call_next):
+    if request.method == "OPTIONS":
+        return await call_next(request)
+    response = await call_next(request)
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    response.headers["Permissions-Policy"] = "geolocation=(), camera=(), microphone=()"
+    return response
 
 # Mount all routers
 app.include_router(auth_router, prefix="/api")
