@@ -1,0 +1,909 @@
+openapi: 3.1.0
+info:
+  title: Api
+  version: 0.1.0
+  description: VoluntaRed API - Plataforma de voluntariado juvenil con sistema de matching
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: auth
+    description: Authentication operations
+  - name: opportunities
+    description: Volunteer opportunity operations
+  - name: users
+    description: User profile operations
+  - name: matching
+    description: Matching and recommendations
+  - name: applications
+    description: Volunteer applications
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /auth/register:
+    post:
+      operationId: register
+      tags: [auth]
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterBody"
+      responses:
+        "201":
+          description: User registered
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: Email already in use
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/login:
+    post:
+      operationId: login
+      tags: [auth]
+      summary: Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginBody"
+      responses:
+        "200":
+          description: Logged in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "401":
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/logout:
+    post:
+      operationId: logout
+      tags: [auth]
+      summary: Logout
+      responses:
+        "200":
+          description: Logged out
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /auth/me:
+    get:
+      operationId: getMe
+      tags: [auth]
+      summary: Get current user
+      responses:
+        "200":
+          description: Current user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /opportunities:
+    get:
+      operationId: listOpportunities
+      tags: [opportunities]
+      summary: List volunteer opportunities
+      parameters:
+        - name: category
+          in: query
+          schema:
+            type: string
+        - name: accessibility
+          in: query
+          schema:
+            type: string
+        - name: effort
+          in: query
+          schema:
+            type: string
+        - name: state
+          in: query
+          schema:
+            type: string
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: skills
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of opportunities
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Opportunity"
+
+    post:
+      operationId: createOpportunity
+      tags: [opportunities]
+      summary: Create a volunteer opportunity (organizations only)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateOpportunityBody"
+      responses:
+        "201":
+          description: Opportunity created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Opportunity"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /opportunities/{id}:
+    get:
+      operationId: getOpportunity
+      tags: [opportunities]
+      summary: Get a single opportunity
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Opportunity detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OpportunityDetail"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    patch:
+      operationId: updateOpportunity
+      tags: [opportunities]
+      summary: Update an opportunity
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateOpportunityBody"
+      responses:
+        "200":
+          description: Updated opportunity
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Opportunity"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    delete:
+      operationId: deleteOpportunity
+      tags: [opportunities]
+      summary: Delete an opportunity
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /opportunities/{id}/apply:
+    post:
+      operationId: applyToOpportunity
+      tags: [applications]
+      summary: Apply to a volunteer opportunity
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApplyBody"
+      responses:
+        "201":
+          description: Application submitted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Application"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /users/profile:
+    get:
+      operationId: getUserProfile
+      tags: [users]
+      summary: Get user profile
+      responses:
+        "200":
+          description: User profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserProfile"
+
+    patch:
+      operationId: updateUserProfile
+      tags: [users]
+      summary: Update user profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateProfileBody"
+      responses:
+        "200":
+          description: Updated profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserProfile"
+
+  /users/applications:
+    get:
+      operationId: getUserApplications
+      tags: [applications]
+      summary: Get applications for current user
+      responses:
+        "200":
+          description: User applications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Application"
+
+  /matching/recommendations:
+    get:
+      operationId: getRecommendations
+      tags: [matching]
+      summary: Get personalized opportunity recommendations for current user
+      responses:
+        "200":
+          description: Recommended opportunities with match scores
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MatchedOpportunity"
+
+  /matching/score/{opportunityId}:
+    get:
+      operationId: getMatchScore
+      tags: [matching]
+      summary: Get match score for a specific opportunity
+      parameters:
+        - name: opportunityId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Match score and breakdown
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MatchScore"
+
+  /stats/summary:
+    get:
+      operationId: getStatsSummary
+      tags: [opportunities]
+      summary: Get platform stats summary
+      responses:
+        "200":
+          description: Platform statistics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StatsSummary"
+
+  /opportunities/categories/list:
+    get:
+      operationId: listCategories
+      tags: [opportunities]
+      summary: List all available categories
+      responses:
+        "200":
+          description: List of categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Category"
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error
+
+    MessageResponse:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+        - message
+
+    RegisterBody:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+        name:
+          type: string
+        userType:
+          type: string
+          enum: [volunteer, organization]
+        organizationName:
+          type: ["string", "null"]
+        organizationDescription:
+          type: ["string", "null"]
+      required:
+        - email
+        - password
+        - name
+        - userType
+
+    LoginBody:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      required:
+        - email
+        - password
+
+    AuthResponse:
+      type: object
+      properties:
+        user:
+          $ref: "#/components/schemas/User"
+        message:
+          type: string
+      required:
+        - user
+        - message
+
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+        name:
+          type: string
+        userType:
+          type: string
+          enum: [volunteer, organization]
+        organizationName:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+      required:
+        - id
+        - email
+        - name
+        - userType
+        - createdAt
+
+    UserProfile:
+      type: object
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+        name:
+          type: string
+        userType:
+          type: string
+        organizationName:
+          type: ["string", "null"]
+        organizationDescription:
+          type: ["string", "null"]
+        bio:
+          type: ["string", "null"]
+        skills:
+          type: array
+          items:
+            type: string
+        interests:
+          type: array
+          items:
+            type: string
+        accessibilityNeeds:
+          type: array
+          items:
+            type: string
+        state:
+          type: ["string", "null"]
+        city:
+          type: ["string", "null"]
+        age:
+          type: ["integer", "null"]
+        createdAt:
+          type: string
+      required:
+        - id
+        - email
+        - name
+        - userType
+        - skills
+        - interests
+        - accessibilityNeeds
+        - createdAt
+
+    UpdateProfileBody:
+      type: object
+      properties:
+        name:
+          type: string
+        bio:
+          type: string
+        skills:
+          type: array
+          items:
+            type: string
+        interests:
+          type: array
+          items:
+            type: string
+        accessibilityNeeds:
+          type: array
+          items:
+            type: string
+        state:
+          type: string
+        city:
+          type: string
+        age:
+          type: integer
+        organizationName:
+          type: string
+        organizationDescription:
+          type: string
+
+    Opportunity:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        organizationId:
+          type: integer
+        organizationName:
+          type: string
+        category:
+          type: string
+        skills:
+          type: array
+          items:
+            type: string
+        interests:
+          type: array
+          items:
+            type: string
+        accessibilityFeatures:
+          type: array
+          items:
+            type: string
+        effortLevel:
+          type: string
+          enum: [low, medium, high]
+        location:
+          type: string
+        state:
+          type: ["string", "null"]
+        startDate:
+          type: ["string", "null"]
+        endDate:
+          type: ["string", "null"]
+        spotsAvailable:
+          type: ["integer", "null"]
+        isActive:
+          type: boolean
+        imageUrl:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+      required:
+        - id
+        - title
+        - description
+        - organizationId
+        - organizationName
+        - category
+        - skills
+        - interests
+        - accessibilityFeatures
+        - effortLevel
+        - location
+        - isActive
+        - createdAt
+
+    OpportunityDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        requirements:
+          type: ["string", "null"]
+        organizationId:
+          type: integer
+        organizationName:
+          type: string
+        organizationDescription:
+          type: ["string", "null"]
+        category:
+          type: string
+        skills:
+          type: array
+          items:
+            type: string
+        interests:
+          type: array
+          items:
+            type: string
+        accessibilityFeatures:
+          type: array
+          items:
+            type: string
+        effortLevel:
+          type: string
+        location:
+          type: string
+        state:
+          type: ["string", "null"]
+        startDate:
+          type: ["string", "null"]
+        endDate:
+          type: ["string", "null"]
+        spotsAvailable:
+          type: ["integer", "null"]
+        applicantsCount:
+          type: integer
+        isActive:
+          type: boolean
+        imageUrl:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+      required:
+        - id
+        - title
+        - description
+        - organizationId
+        - organizationName
+        - category
+        - skills
+        - interests
+        - accessibilityFeatures
+        - effortLevel
+        - location
+        - isActive
+        - applicantsCount
+        - createdAt
+
+    CreateOpportunityBody:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        requirements:
+          type: string
+        category:
+          type: string
+        skills:
+          type: array
+          items:
+            type: string
+        interests:
+          type: array
+          items:
+            type: string
+        accessibilityFeatures:
+          type: array
+          items:
+            type: string
+        effortLevel:
+          type: string
+          enum: [low, medium, high]
+        location:
+          type: string
+        state:
+          type: string
+        startDate:
+          type: string
+        endDate:
+          type: string
+        spotsAvailable:
+          type: integer
+      required:
+        - title
+        - description
+        - category
+        - effortLevel
+        - location
+
+    UpdateOpportunityBody:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        requirements:
+          type: string
+        category:
+          type: string
+        skills:
+          type: array
+          items:
+            type: string
+        interests:
+          type: array
+          items:
+            type: string
+        accessibilityFeatures:
+          type: array
+          items:
+            type: string
+        effortLevel:
+          type: string
+        location:
+          type: string
+        state:
+          type: string
+        startDate:
+          type: string
+        endDate:
+          type: string
+        spotsAvailable:
+          type: integer
+        isActive:
+          type: boolean
+
+    ApplyBody:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+        - message
+
+    Application:
+      type: object
+      properties:
+        id:
+          type: integer
+        opportunityId:
+          type: integer
+        opportunityTitle:
+          type: string
+        userId:
+          type: integer
+        userName:
+          type: string
+        message:
+          type: string
+        status:
+          type: string
+          enum: [pending, accepted, rejected]
+        createdAt:
+          type: string
+      required:
+        - id
+        - opportunityId
+        - opportunityTitle
+        - userId
+        - userName
+        - message
+        - status
+        - createdAt
+
+    MatchedOpportunity:
+      type: object
+      properties:
+        opportunity:
+          $ref: "#/components/schemas/Opportunity"
+        matchScore:
+          type: integer
+        matchReasons:
+          type: array
+          items:
+            type: string
+      required:
+        - opportunity
+        - matchScore
+        - matchReasons
+
+    MatchScore:
+      type: object
+      properties:
+        opportunityId:
+          type: integer
+        totalScore:
+          type: integer
+        skillsScore:
+          type: integer
+        interestsScore:
+          type: integer
+        accessibilityScore:
+          type: integer
+        locationScore:
+          type: integer
+        reasons:
+          type: array
+          items:
+            type: string
+      required:
+        - opportunityId
+        - totalScore
+        - skillsScore
+        - interestsScore
+        - accessibilityScore
+        - locationScore
+        - reasons
+
+    StatsSummary:
+      type: object
+      properties:
+        totalOpportunities:
+          type: integer
+        totalVolunteers:
+          type: integer
+        totalOrganizations:
+          type: integer
+        totalApplications:
+          type: integer
+        categoryCounts:
+          type: array
+          items:
+            $ref: "#/components/schemas/CategoryCount"
+      required:
+        - totalOpportunities
+        - totalVolunteers
+        - totalOrganizations
+        - totalApplications
+        - categoryCounts
+
+    CategoryCount:
+      type: object
+      properties:
+        category:
+          type: string
+        count:
+          type: integer
+      required:
+        - category
+        - count
+
+    Category:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        icon:
+          type: string
+      required:
+        - id
+        - name
+        - icon
