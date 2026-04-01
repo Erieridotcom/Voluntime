@@ -35,7 +35,8 @@ export default function Login() {
 
   const onSubmit = (data: LoginForm) => {
     loginMutation.mutate({ data }, {
-      onSuccess: () => {
+      onSuccess: (res: any) => {
+  if (res?.token) localStorage.setItem("auth_token", res.token);
         // Invalidate getMe so it refetches and updates the UI
         queryClient.invalidateQueries({ queryKey: getGetMeQueryKey() });
         toast({
