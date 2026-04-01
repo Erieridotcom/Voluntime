@@ -37,8 +37,9 @@ export default function Login() {
     loginMutation.mutate({ data }, {
       onSuccess: (res: any) => {
   if (res?.token) localStorage.setItem("auth_token", res.token);
-        // Invalidate getMe so it refetches and updates the UI
-        queryClient.invalidateQueries({ queryKey: getGetMeQueryKey() });
+         if (res?.user) 
+        
+        queryClient.setQueryData(getGetMeQueryKey(), res.user);
         toast({
           title: "¡Hola de nuevo!",
           description: "Has iniciado sesión exitosamente.",
