@@ -93,7 +93,7 @@ export default function Register() {
       {
        onSuccess: (res: any) => {
   if (res?.token) localStorage.setItem("auth_token", res.token);
-          queryClient.invalidateQueries({ queryKey: getGetMeQueryKey() });
+          queryClient.setQueryData(getGetMeQueryKey(), res.user);
           toast({
             title: "¡Bienvenido a VoluntaRed!",
             description: "Tu cuenta ha sido creada exitosamente.",
