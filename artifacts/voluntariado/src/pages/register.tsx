@@ -91,7 +91,8 @@ export default function Register() {
     registerMutation.mutate(
       { data: { ...data, userType: userType as RegisterBodyUserType } },
       {
-        onSuccess: () => {
+       onSuccess: (res: any) => {
+  if (res?.token) localStorage.setItem("auth_token", res.token);
           queryClient.invalidateQueries({ queryKey: getGetMeQueryKey() });
           toast({
             title: "¡Bienvenido a VoluntaRed!",
