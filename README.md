@@ -21,7 +21,7 @@ VoluntaRed conecta a jóvenes voluntarios con organizaciones sociales en México
 
 ## Cómo ejecutar el proyecto
 
-### Opción A — Desde VS Code (recomendado)
+### Desde VS Code (recomendado)
 
 1. Abrir la carpeta del proyecto en VS Code (**File → Open Folder**)
 2. Abrir la paleta de comandos con `Ctrl+Shift+P` (Windows) o `Cmd+Shift+P` (Mac)
