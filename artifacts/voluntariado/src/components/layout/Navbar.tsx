@@ -43,7 +43,7 @@ export function Navbar() {
               <div className="bg-primary text-primary-foreground p-1.5 rounded-xl group-hover:rotate-12 transition-transform">
                 <HeartHandshake className="w-6 h-6" />
               </div>
-              <span className="font-display font-bold text-xl tracking-tight">VoluntaRed</span>
+              <span className="font-display font-bold text-xl tracking-tight">Voluntime</span>
             </Link>
           </div>
           
