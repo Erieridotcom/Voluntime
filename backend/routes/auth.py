@@ -135,7 +135,7 @@ def register(
     token = create_access_token(user.id)
     _set_auth_cookie(response, token)
 
-    return {"user": _user_to_dict(user), "message": "Registro exitoso"}
+    return {"user": _user_to_dict(user), "token": token, "message": "Registro exitoso"}
 
 
 @router.post("/login")
@@ -162,7 +162,7 @@ def login(
     token = create_access_token(user.id)
     _set_auth_cookie(response, token)
 
-    return {"user": _user_to_dict(user), "message": "Inicio de sesión exitoso"}
+    return {"user": _user_to_dict(user), "token": token, "message": "Inicio de sesión exitoso"}
 
 
 @router.post("/logout")
