@@ -16,10 +16,11 @@ export function Navbar() {
   const handleLogout = () => {
     logoutMutation.mutate(undefined, {
       onSuccess: () => {
-        queryClient.setQueryData(getGetMeQueryKey(), null);
-        setLocation("/");
-        setIsOpen(false);
-      },
+  localStorage.removeItem("auth_token");
+  queryClient.setQueryData(getGetMeQueryKey(), null);
+  setLocation("/");
+  setIsOpen(false);
+},
     });
   };
 
