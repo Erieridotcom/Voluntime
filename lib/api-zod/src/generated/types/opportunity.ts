@@ -28,6 +28,7 @@ export interface Opportunity {
   /** @nullable */
   spotsAvailable?: number | null;
   isActive: boolean;
+  isRemote: boolean;
   /** @nullable */
   imageUrl?: string | null;
   createdAt: string;
