@@ -226,14 +226,14 @@ def update_opportunity(
         opp.state = body.state
     if body.startDate is not None:
         opp.start_date = body.startDate
-    if body.endDate is not None:
-    if body.isRemote is not None:
-        opp.is_remote = body.isRemote    
+        if body.endDate is not None:
         opp.end_date = body.endDate
     if body.spotsAvailable is not None:
         opp.spots_available = body.spotsAvailable
     if body.isActive is not None:
         opp.is_active = body.isActive
+    if body.isRemote is not None:
+        opp.is_remote = body.isRemote
 
     db.commit()
     db.refresh(opp)
