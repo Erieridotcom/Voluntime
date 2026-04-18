@@ -37,6 +37,8 @@ class CreateOpportunityBody(BaseModel):
     startDate: Optional[str] = None
     endDate: Optional[str] = None
     spotsAvailable: Optional[int] = None
+    isRemote: bool = False
+
 
 
 class UpdateOpportunityBody(BaseModel):
@@ -53,9 +55,10 @@ class UpdateOpportunityBody(BaseModel):
     state: Optional[str] = None
     startDate: Optional[str] = None
     endDate: Optional[str] = None
+    isRemote: Optional[bool] = None
     spotsAvailable: Optional[int] = None
     isActive: Optional[bool] = None
-
+    
 
 class ApplyBody(BaseModel):
     message: str
@@ -79,6 +82,7 @@ def _opp_dict(opp: Opportunity, org: Optional[User]) -> dict:
         "startDate": opp.start_date,
         "endDate": opp.end_date,
         "spotsAvailable": opp.spots_available,
+        "isRemote": opp.is_remote,
         "isActive": opp.is_active,
         "imageUrl": opp.image_url,
         "createdAt": opp.created_at.isoformat(),
@@ -158,6 +162,7 @@ def create_opportunity(
         effort_level=body.effortLevel,
         location=body.location,
         state=body.state,
+        is_remote=body.isRemote,
         start_date=body.startDate,
         end_date=body.endDate,
         spots_available=body.spotsAvailable,
@@ -222,6 +227,8 @@ def update_opportunity(
     if body.startDate is not None:
         opp.start_date = body.startDate
     if body.endDate is not None:
+    if body.isRemote is not None:
+        opp.is_remote = body.isRemote    
         opp.end_date = body.endDate
     if body.spotsAvailable is not None:
         opp.spots_available = body.spotsAvailable
