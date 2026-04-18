@@ -121,6 +121,8 @@ export interface Opportunity {
   effortLevel: OpportunityEffortLevel;
   location: string;
   /** @nullable */
+  city?: string | null;
+  /** @nullable */
   state?: string | null;
   /** @nullable */
   startDate?: string | null;
@@ -150,6 +152,8 @@ export interface OpportunityDetail {
   accessibilityFeatures: string[];
   effortLevel: string;
   location: string;
+  /** @nullable */
+  city?: string | null;
   /** @nullable */
   state?: string | null;
   /** @nullable */
