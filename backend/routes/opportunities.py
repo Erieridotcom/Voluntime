@@ -226,7 +226,7 @@ def update_opportunity(
         opp.state = body.state
     if body.startDate is not None:
         opp.start_date = body.startDate
-        if body.endDate is not None:
+    if body.endDate is not None:
         opp.end_date = body.endDate
     if body.spotsAvailable is not None:
         opp.spots_available = body.spotsAvailable
