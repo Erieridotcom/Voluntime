@@ -122,33 +122,41 @@ export default function Opportunities() {
 
           <div className="space-y-3">
             <h3 className="font-bold text-sm text-muted-foreground uppercase tracking-wider">Estado</h3>
-            <Select value={selectedState} onValueChange={setSelectedState}>
-              <SelectTrigger className="w-full h-12 rounded-xl bg-card border-border">
-                <SelectValue placeholder="Cualquier estado" />
-              </SelectTrigger>
-              <SelectContent className="max-h-60 overflow-y-auto">
-                <SelectItem value="all">Cualquier estado</SelectItem>
-                {MEXICAN_STATES.map((s) => (
-                  <SelectItem key={s} value={s}>{s}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <div className="rounded-xl border border-border bg-card overflow-y-auto max-h-48 divide-y divide-border">
+              {["all", ...MEXICAN_STATES].map((s) => (
+                <button
+                  key={s}
+                  onClick={() => setSelectedState(s)}
+                  className={`w-full text-left px-4 py-2.5 text-sm transition-colors ${
+                    selectedState === s
+                      ? "bg-primary text-primary-foreground font-semibold"
+                      : "hover:bg-muted/60 text-foreground"
+                  }`}
+                >
+                  {s === "all" ? "Cualquier estado" : s}
+                </button>
+              ))}
+            </div>
           </div>
 
           {availableCities.length > 0 && (
             <div className="space-y-3">
               <h3 className="font-bold text-sm text-muted-foreground uppercase tracking-wider">Ciudad / Municipio</h3>
-              <Select value={selectedCity} onValueChange={setSelectedCity}>
-                <SelectTrigger className="w-full h-12 rounded-xl bg-card border-border">
-                  <SelectValue placeholder="Cualquier ciudad" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Cualquier ciudad</SelectItem>
-                  {availableCities.map((c) => (
-                    <SelectItem key={c} value={c}>{c}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div className="rounded-xl border border-border bg-card overflow-y-auto max-h-48 divide-y divide-border">
+                {["all", ...availableCities].map((c) => (
+                  <button
+                    key={c}
+                    onClick={() => setSelectedCity(c)}
+                    className={`w-full text-left px-4 py-2.5 text-sm transition-colors ${
+                      selectedCity === c
+                        ? "bg-primary text-primary-foreground font-semibold"
+                        : "hover:bg-muted/60 text-foreground"
+                    }`}
+                  >
+                    {c === "all" ? "Cualquier ciudad" : c}
+                  </button>
+                ))}
+              </div>
             </div>
           )}
 
