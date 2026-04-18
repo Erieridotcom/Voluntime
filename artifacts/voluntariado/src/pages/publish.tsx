@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { SelectionChips } from "@/components/ui/selection-chips";
 import { Loader2, PlusCircle, MapPin, Sparkles } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Switch } from "@/components/ui/switch";
 import { useState, useEffect } from "react";
 import { SKILLS, INTERESTS, ACCESSIBILITY_OPTIONS, MEXICAN_STATES, CITIES_BY_STATE } from "@/lib/matchingOptions";
 
@@ -42,6 +43,7 @@ function PublishContent() {
   const [selectedState, setSelectedState] = useState<string>("");
   const [selectedCity, setSelectedCity] = useState<string>("");
   const [availableCities, setAvailableCities] = useState<string[]>([]);
+  const [isRemote, setIsRemote] = useState(false);
 
   useEffect(() => {
     if (selectedState && CITIES_BY_STATE[selectedState]) {
@@ -72,6 +74,7 @@ function PublishContent() {
       city: selectedCity || undefined,
       startDate: data.startDate || undefined,
       endDate: data.endDate || undefined,
+      isRemote: isRemote,
     };
 
     createMutation.mutate({ data: formattedData }, {
@@ -192,6 +195,17 @@ function PublishContent() {
                   </SelectContent>
                 </Select>
               </div>
+            </div>
+
+            <div className="flex items-center gap-3 py-2">
+              <Switch
+                checked={isRemote}
+                onCheckedChange={setIsRemote}
+                id="is-remote"
+              />
+              <Label htmlFor="is-remote" className="text-base cursor-pointer">
+                Esta oportunidad es remota (no requiere presencia física)
+              </Label>
             </div>
 
             <div className="space-y-2">
