@@ -122,7 +122,7 @@ export default function Opportunities() {
 
           <div className="space-y-3">
             <h3 className="font-bold text-sm text-muted-foreground uppercase tracking-wider">Estado</h3>
-            <div className="rounded-xl border border-border bg-card overflow-y-auto max-h-48 divide-y divide-border">
+            <div className="rounded-xl border border-border bg-card divide-y divide-border" style={{ maxHeight: "12rem", overflowY: "auto" }}>
               {["all", ...MEXICAN_STATES].map((s) => (
                 <button
                   key={s}
@@ -142,7 +142,7 @@ export default function Opportunities() {
           {availableCities.length > 0 && (
             <div className="space-y-3">
               <h3 className="font-bold text-sm text-muted-foreground uppercase tracking-wider">Ciudad / Municipio</h3>
-              <div className="rounded-xl border border-border bg-card overflow-y-auto max-h-48 divide-y divide-border">
+              <div className="rounded-xl border border-border bg-card divide-y divide-border" style={{ maxHeight: "12rem", overflowY: "auto" }}>
                 {["all", ...availableCities].map((c) => (
                   <button
                     key={c}
