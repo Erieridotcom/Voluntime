@@ -20,6 +20,13 @@ def get_recommendations(
         raise HTTPException(404, "Usuario no encontrado")
 
     opportunities = db.query(Opportunity).filter(Opportunity.is_active == True).all()
+    user_state = (user.state or "").strip().lower()
+    opportunities = [
+        opp for opp in opportunities
+        if opp.is_remote
+        or not user_state
+        or (opp.state or "").strip().lower() == user_state
+]
 
     scored = []
     for opp in opportunities:
