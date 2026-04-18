@@ -86,7 +86,11 @@ def calculate_match_score(user: User, opportunity: Opportunity) -> MatchResult:
     elif not user_accessibility:
         accessibility_score = 20
 
-    # --- Location (max 10 pts) ---
+        # --- Location (max 10 pts) ---
+    user_state = _normalize(user.state)
+    user_city = _normalize(getattr(user, "city", None))
+    opp_city = _normalize(getattr(opportunity, "city", None))
+
     if getattr(opportunity, "is_remote", False):
         location_score = 10
         reasons.append("Oportunidad remota")
@@ -98,7 +102,6 @@ def calculate_match_score(user: User, opportunity: Opportunity) -> MatchResult:
     else:
         location_score = 6
         reasons.append("En tu estado")
-            location_score = 0
 
     total = min(100, skills_score + interests_score + accessibility_score + location_score)
 
