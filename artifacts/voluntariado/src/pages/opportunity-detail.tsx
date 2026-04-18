@@ -38,7 +38,7 @@ export default function OpportunityDetail() {
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const handleApply = () => {
-    applyMutation.mutate({ data: { message } }, {
+    applyMutation.mutate({ id: oppId, data: { message } }, {
       onSuccess: () => {
         toast({
           title: "¡Postulación enviada!",
