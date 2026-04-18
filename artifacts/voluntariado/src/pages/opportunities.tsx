@@ -126,7 +126,7 @@ export default function Opportunities() {
               <SelectTrigger className="w-full h-12 rounded-xl bg-card border-border">
                 <SelectValue placeholder="Cualquier estado" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="max-h-60 overflow-y-auto">
                 <SelectItem value="all">Cualquier estado</SelectItem>
                 {MEXICAN_STATES.map((s) => (
                   <SelectItem key={s} value={s}>{s}</SelectItem>
