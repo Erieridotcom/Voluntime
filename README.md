@@ -1,6 +1,6 @@
-# VoluntaRed — Plataforma de Voluntariado Juvenil
+# Voluntime — Plataforma de Voluntariado Juvenil
 
-VoluntaRed conecta a jóvenes voluntarios con organizaciones sociales en México mediante un sistema inteligente de matching, seguimiento de horas, insignias de logros y un foro comunitario.
+Voluntime conecta a jóvenes voluntarios con organizaciones sociales en México mediante un sistema inteligente de matching, seguimiento de horas, insignias de logros y un foro comunitario.
 
 ---
 
