@@ -27,11 +27,11 @@ Voluntime conecta a jóvenes voluntarios con organizaciones sociales en México 
 2. Abrir la paleta de comandos con `Ctrl+Shift+P` (Windows) o `Cmd+Shift+P` (Mac)
 3. Escribir **"Run Task"** y presionar Enter
 4. La primera vez: seleccionar **"1. Instalar dependencias"** y esperar a que termine
-5. Repetir los pasos 2 y 3, luego seleccionar **"Iniciar VoluntaRed"**
+5. Repetir los pasos 2 y 3, luego seleccionar **"Iniciar Voluntime"**
 6. Se abren dos terminales integradas (backend y frontend)
 7. Abrir el navegador en **http://localhost:5173**
 
-> A partir de la segunda vez, omitir el paso 4 e ir directo a "Iniciar VoluntaRed".
+> A partir de la segunda vez, omitir el paso 4 e ir directo a "Iniciar Voluntime".
 
 ---
 
